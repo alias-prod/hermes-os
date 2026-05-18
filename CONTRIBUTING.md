@@ -1,6 +1,6 @@
-# Contributing to OpenClaw OS
+# Contributing to Hermes OS
 
-Thank you for considering contributing to OpenClaw OS! This document covers how to set up the repo, what we expect from contributions, and the workflow for opening a pull request.
+Thank you for considering contributing to Hermes OS! This document covers how to set up the repo, what we expect from contributions, and the workflow for opening a pull request.
 
 ## Code of Conduct
 
@@ -9,10 +9,10 @@ By participating in this project, you agree to abide by our [Code of Conduct](./
 ## Repository layout
 
 ```
-openclaw-os/
+hermes-os/
 ├── packages/
-│   ├── claw-client/   # Next.js generative UI web client
-│   └── claw-plugin/   # OpenClaw server-side plugin
+│   ├── hermes-client/   # Next.js generative UI web client
+│   └── hermes-plugin/   # Hermes server-side plugin
 ├── scripts/           # Local helpers (connection info, tunnel setup)
 └── .github/           # CI workflows + issue / PR templates
 ```
@@ -23,13 +23,13 @@ See [`AGENTS.md`](./AGENTS.md) for protocol details, gateway internals, and the 
 
 - [Node.js](https://nodejs.org/) **20+** (run `nvm use` to pick up the version pinned in `.nvmrc`)
 - [pnpm](https://pnpm.io/) **9.15+**
-- A running [OpenClaw](https://github.com/openclaw/openclaw) gateway for end-to-end testing
+- A running [Hermes](https://github.com/NousResearch/hermes-agent) gateway for end-to-end testing
 
 ## Local setup
 
 ```bash
-git clone https://github.com/thesysdev/openclaw-os.git
-cd openclaw-os
+git clone https://github.com/Minoo7/hermes-os.git
+cd hermes-os
 pnpm install
 ```
 
@@ -38,18 +38,18 @@ That's it — the install runs in the workspace root and links both packages.
 ### Run the client locally
 
 ```bash
-cd packages/claw-client
+cd packages/hermes-client
 pnpm dev   # http://localhost:18790
 ```
 
 ### Install the plugin into a local gateway
 
 ```bash
-openclaw plugins install -l ./packages/claw-plugin
-openclaw restart
+hermes plugins install -l ./packages/hermes-plugin
+hermes restart
 ```
 
-The plugin is loaded as raw TypeScript via [jiti](https://github.com/unjs/jiti) — no build step. See [`packages/claw-plugin/README.md`](./packages/claw-plugin/README.md) for remote install instructions.
+The plugin is loaded as raw TypeScript via [jiti](https://github.com/unjs/jiti) — no build step. See [`packages/hermes-plugin/README.md`](./packages/hermes-plugin/README.md) for remote install instructions.
 
 ## Development workflow
 
@@ -86,8 +86,8 @@ Notes:
 Keep the subject short, imperative, and scoped to the package when relevant:
 
 ```
-feat(claw-client): stream artifact updates incrementally
-fix(claw-plugin): tolerate missing senderId in session keys
+feat(hermes-client): stream artifact updates incrementally
+fix(hermes-plugin): tolerate missing senderId in session keys
 chore(deps): bump @openuidev/react-ui to 0.12.0
 ```
 
@@ -96,7 +96,7 @@ chore(deps): bump @openuidev/react-ui to 0.12.0
 Please use the [issue templates](.github/ISSUE_TEMPLATE/). For bugs, include:
 
 - A clear description and reproduction steps
-- Versions of the client, plugin, and OpenClaw gateway
+- Versions of the client, plugin, and Hermes gateway
 - Relevant gateway logs and browser console output
 
 ## Security issues
@@ -105,4 +105,4 @@ Please **do not** report security vulnerabilities through public GitHub issues. 
 
 ## Questions?
 
-Open a [discussion](https://github.com/thesysdev/openclaw-os/discussions) or join us on [Discord](https://discord.com/invite/Pbv5PsqUSv).
+Open a [discussion](https://github.com/Minoo7/hermes-os/discussions) or join us on [Discord](https://discord.com/invite/Pbv5PsqUSv).

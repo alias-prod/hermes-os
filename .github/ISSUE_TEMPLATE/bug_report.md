@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Create a report to help us improve OpenClaw OS
+about: Create a report to help us improve Hermes OS
 title: ""
 labels: bug
 assignees: ""
@@ -11,8 +11,8 @@ A clear and concise description of what the bug is.
 
 **Affected package**
 
-- [ ] `@openuidev/claw-client`
-- [ ] `@openuidev/openclaw-os-plugin`
+- [ ] `@openuidev/hermes-client`
+- [ ] `@openuidev/hermes-os-plugin`
 - [ ] Both
 - [ ] Not sure
 
@@ -36,9 +36,9 @@ If applicable, add screenshots to help explain your problem.
 - Browser: [e.g. Chrome 122, Safari 17]
 - Node version: [e.g. 20.11.1]
 - pnpm version: [e.g. 9.15.4]
-- OpenClaw gateway version: [e.g. 0.4.0]
-- `@openuidev/claw-client` version: [e.g. 0.1.0]
-- `@openuidev/openclaw-os-plugin` version: [e.g. 0.1.1]
+- Hermes gateway version: [e.g. 0.4.0]
+- `@openuidev/hermes-client` version: [e.g. 0.1.0]
+- `@openuidev/hermes-os-plugin` version: [e.g. 0.1.1]
 
 **Gateway logs**
 

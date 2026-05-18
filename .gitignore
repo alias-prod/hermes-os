@@ -43,8 +43,8 @@ next-env.d.ts
 dist/
 build/
 
-# claw-client static export bundled into claw-plugin by `pnpm bundle-ui`
-packages/claw-plugin/static/
+# hermes-client static export bundled into hermes-plugin by `pnpm bundle-ui`
+packages/hermes-plugin/static/
 
 # TypeScript
 *.tsbuildinfo
@@ -61,3 +61,11 @@ packages/claw-plugin/static/
 # Future Plans
 PLAN*
 draft/
+
+# Tooling state
+.openpackage/
+.omx/
+.agents/
+skills-lock.json
+__pycache__/
+*.pyc

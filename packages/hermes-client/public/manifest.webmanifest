@@ -1,0 +1,19 @@
+{
+  "name": "Hermes",
+  "short_name": "Hermes",
+  "description": "Generative UI client for Hermes — chat with agents, build apps, run cron jobs.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#0E0E0E",
+  "background_color": "#FFFFFF",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,16 +1,16 @@
 {
-  "name": "claw-workspace",
+  "name": "hermes-workspace",
   "private": true,
   "version": "0.0.0",
-  "description": "OpenClaw OS — Generative UI client and OpenClaw plugin powered by OpenUI Lang",
+  "description": "Hermes OS — Generative UI client and Hermes plugin powered by OpenUI Lang",
   "homepage": "https://openui.com",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/thesysdev/openclaw-os.git"
+    "url": "https://github.com/Minoo7/hermes-os.git"
   },
   "bugs": {
-    "url": "https://github.com/thesysdev/openclaw-os/issues"
+    "url": "https://github.com/Minoo7/hermes-os/issues"
   },
   "engines": {
     "node": ">=20"

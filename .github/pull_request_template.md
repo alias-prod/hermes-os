@@ -12,8 +12,8 @@ Describe how you validated this change.
 
 - [ ] Not applicable (explain why)
 - [ ] Verified locally (`pnpm ci` passes)
-- [ ] Manually tested in the Claw client
-- [ ] Manually tested the plugin end-to-end with a running OpenClaw gateway
+- [ ] Manually tested in the Hermes client
+- [ ] Manually tested the plugin end-to-end with a running Hermes gateway
 
 ## Checklist
 

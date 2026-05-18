@@ -1,11 +1,13 @@
-import { readFileSync } from "fs";
+#!/usr/bin/env node
+import { existsSync, readFileSync } from "fs";
 import { homedir } from "os";
 import { join } from "path";
 
-const p = join(homedir(), ".openclaw", "openclaw.json");
-const c = JSON.parse(readFileSync(p, "utf8"));
-const host = c.gateway?.bind?.host || "127.0.0.1";
-const port = c.gateway?.bind?.port || 18789;
-const token = c.gateway?.auth?.token;
-console.log("Gateway:", `ws://${host}:${port}`);
-console.log("Token:", token || "<not set>");
+const envPath = join(homedir(), ".hermes", ".env");
+let key = "<not set>";
+if (existsSync(envPath)) {
+  const match = readFileSync(envPath, "utf8").match(/^API_SERVER_KEY=(.*)$/m);
+  key = match?.[1]?.trim().replace(/^['"]|['"]$/g, "") || "<not set>";
+}
+console.log("Hermes API:", process.env.HERMES_API_BASE_URL || "http://127.0.0.1:8642/v1");
+console.log("API key:", key);
