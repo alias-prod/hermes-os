@@ -8,6 +8,7 @@ const isStaticExport = process.env["NEXT_OUTPUT"] !== "server";
 const nextConfig: NextConfig = {
   ...(isStaticExport ? { output: "export" as const } : {}),
   reactStrictMode: false,
+  allowedDevOrigins: ["100.100.98.17"],
   turbopack: { root: path.resolve(__dirname, "../..") },
   images: { unoptimized: true },
 };

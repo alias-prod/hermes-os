@@ -13,6 +13,7 @@
 
 import type { AssistantTimelineSegment } from "@/lib/chat/timeline";
 import type { ChatHistoryMessage } from "@/lib/gateway/types";
+import { createId } from "@/lib/uuid";
 
 export type ToolCallOutput = {
   id: string;
@@ -48,7 +49,7 @@ function extractToolCalls(content: unknown): ToolCallOutput[] {
   return (content as Array<{ type?: string; id?: string; name?: string; arguments?: unknown }>)
     .filter((c) => c.type === "toolCall")
     .map((c) => ({
-      id: c.id ?? crypto.randomUUID(),
+      id: c.id ?? createId(),
       type: "function" as const,
       function: {
         name: c.name ?? "unknown",
@@ -153,7 +154,7 @@ export function mergeHistoryMessages(raw: ChatHistoryMessage[]): MergedMessage[]
     if (m.role === "user") {
       flush();
       output.push({
-        id: m.__hermes?.id ?? m.id ?? crypto.randomUUID(),
+        id: m.__hermes?.id ?? m.id ?? createId(),
         role: "user",
         content: extractText(m.content),
       });
@@ -184,7 +185,7 @@ export function mergeHistoryMessages(raw: ChatHistoryMessage[]): MergedMessage[]
         const text = extractText(m.content);
         if (text) {
           output.push({
-            id: m.__hermes?.id ?? m.id ?? crypto.randomUUID(),
+            id: m.__hermes?.id ?? m.id ?? createId(),
             role: "assistant",
             content: `${GATEWAY_SENTINEL}${text}`,
           });
@@ -205,7 +206,7 @@ export function mergeHistoryMessages(raw: ChatHistoryMessage[]): MergedMessage[]
       if (!text && allTools.length === 0 && m.stopReason === "error" && m.errorMessage) {
         flush();
         pending = {
-          id: m.__hermes?.id ?? m.id ?? crypto.randomUUID(),
+          id: m.__hermes?.id ?? m.id ?? createId(),
           role: "assistant",
           content: `${ERROR_SENTINEL}${m.errorMessage}`,
         };
@@ -228,7 +229,7 @@ export function mergeHistoryMessages(raw: ChatHistoryMessage[]): MergedMessage[]
 
       if (!pending) {
         pending = {
-          id: m.__hermes?.id ?? m.id ?? crypto.randomUUID(),
+          id: m.__hermes?.id ?? m.id ?? createId(),
           role: "assistant",
           content: null,
           ...(allTools.length ? { toolCalls: allTools } : {}),
@@ -293,9 +294,7 @@ export function mergeHistoryMessages(raw: ChatHistoryMessage[]): MergedMessage[]
       if (!pending) continue;
 
       const toolCallId =
-        m.tool_call_id ??
-        pending.toolCalls?.[pending.toolCalls.length - 1]?.id ??
-        crypto.randomUUID();
+        m.tool_call_id ?? pending.toolCalls?.[pending.toolCalls.length - 1]?.id ?? createId();
       const output = resolveToolMessageOutput(m);
       const fallbackError =
         typeof m.error === "string" && m.error.trim().length > 0
@@ -324,7 +323,7 @@ export function mergeHistoryMessages(raw: ChatHistoryMessage[]): MergedMessage[]
     if (m.role === "system" && m.__hermes?.kind === "compaction") {
       flush();
       output.push({
-        id: m.__hermes?.id ?? m.id ?? crypto.randomUUID(),
+        id: m.__hermes?.id ?? m.id ?? createId(),
         role: "assistant",
         content: `${COMPACTION_SENTINEL}Context compacted`,
       });

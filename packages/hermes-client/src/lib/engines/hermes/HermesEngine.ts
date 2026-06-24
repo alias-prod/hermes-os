@@ -4,10 +4,13 @@ import { ConnectionState } from "@/lib/gateway/types";
 import type { NotificationRecord } from "@/lib/notifications";
 import type { Settings } from "@/lib/storage";
 import { getSettings, saveSettings } from "@/lib/storage";
+import { createId } from "@/lib/uuid";
 import type { HermesThreadListItem, ModelChoice, SessionRow } from "@/types/gateway-responses";
 import { EventType } from "@openuidev/react-headless";
 import type {
   AgentInfo,
+  AppRecord,
+  AppStore,
   ConversationStore,
   Engine,
   EngineCapabilities,
@@ -217,6 +220,84 @@ class HermesConversationStore implements ConversationStore {
   }
 }
 
+class HermesAppStore implements AppStore {
+  constructor(private engine: HermesEngine) {}
+
+  private baseUrl(): string {
+    const apiBaseUrl = normalizeApiBaseUrl(this.engine.settings?.gatewayUrl);
+    return apiBaseUrl.replace(/\/v1$/, "");
+  }
+
+  private headers(): Record<string, string> {
+    const token = this.engine.settings?.token;
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  }
+
+  async listApps() {
+    const response = await fetch(`${this.baseUrl()}/v1/plugins/hermes-os/apps`, {
+      headers: this.headers(),
+    });
+    if (!response.ok) return [];
+    const data = (await response.json()) as { apps?: AppRecord[] };
+    return (data.apps ?? []).map((app) => ({
+      id: app.id,
+      title: app.title,
+      agentId: app.agentId,
+      sessionKey: app.sessionKey,
+      createdAt: app.createdAt,
+      updatedAt: app.updatedAt,
+    }));
+  }
+
+  async getApp(appId: string): Promise<AppRecord | null> {
+    const response = await fetch(
+      `${this.baseUrl()}/v1/plugins/hermes-os/apps/${encodeURIComponent(appId)}`,
+      {
+        headers: this.headers(),
+      },
+    );
+    if (!response.ok) return null;
+    const data = (await response.json()) as { app?: AppRecord };
+    return data.app ?? null;
+  }
+
+  async deleteApp(appId: string): Promise<void> {
+    await fetch(`${this.baseUrl()}/v1/plugins/hermes-os/apps/${encodeURIComponent(appId)}`, {
+      method: "DELETE",
+      headers: this.headers(),
+    });
+  }
+
+  async invokeTool(
+    tool: string,
+    args: Record<string, unknown>,
+    sessionKey?: string,
+  ): Promise<unknown> {
+    const response = await fetch(
+      `${normalizeApiBaseUrl(this.engine.settings?.gatewayUrl)}/chat/completions`,
+      {
+        method: "POST",
+        headers: {
+          ...this.headers(),
+          "Content-Type": "application/json",
+          ...(sessionKey ? { "X-Hermes-Session-Key": sessionKey } : {}),
+        },
+        body: JSON.stringify({
+          model: "hermes-agent",
+          stream: false,
+          messages: [
+            {
+              role: "user",
+              content: `Invoke Hermes OS app runtime tool ${tool} with JSON args: ${JSON.stringify(args)}`,
+            },
+          ],
+        }),
+      },
+    );
+    return response.json();
+  }
+}
+
 export class HermesEngine implements Engine {
   readonly id: string;
   readonly capabilities: EngineCapabilities = {
@@ -226,13 +307,13 @@ export class HermesEngine implements Engine {
     multiAgent: false,
     sessionConfig: false,
     artifacts: false,
-    apps: false,
+    apps: true,
     uploads: false,
   };
 
   readonly conversations: ConversationStore = new HermesConversationStore(this);
   readonly artifacts = undefined;
-  readonly apps = undefined;
+  readonly apps: AppStore = new HermesAppStore(this);
   readonly uploads = undefined;
 
   private _connectionState: ConnectionState = ConnectionState.DISCONNECTED;
@@ -343,7 +424,7 @@ export class HermesEngine implements Engine {
     let completionTokens = 0;
     let totalTokens = 0;
     let messageStarted = false;
-    const messageId = `msg-${crypto.randomUUID()}`;
+    const messageId = `msg-${createId()}`;
     const activeTools = new Set<string>();
 
     const writeEvent = (
@@ -416,7 +497,7 @@ export class HermesEngine implements Engine {
             if (!line || line === "[DONE]") return;
             if (currentEvent === "hermes.tool.progress") {
               const tool = JSON.parse(line) as HermesToolProgress;
-              const toolCallId = tool.toolCallId || `tool-${crypto.randomUUID()}`;
+              const toolCallId = tool.toolCallId || `tool-${createId()}`;
               const toolName = tool.tool || "tool";
               ensureMessageStarted(streamController);
               if (tool.status === "running") {
@@ -503,7 +584,7 @@ export class HermesEngine implements Engine {
           });
 
           this.appendHistory(session.id, [
-            { id: `user-${crypto.randomUUID()}`, role: "user", content: lastUser.content },
+            { id: `user-${createId()}`, role: "user", content: lastUser.content },
             { id: messageId, role: "assistant", content: assistantText },
           ]);
           this.upsertLocalSession({

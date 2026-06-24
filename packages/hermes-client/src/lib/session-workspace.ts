@@ -2,6 +2,7 @@
 
 import { separateContentAndContext } from "@/lib/content-parser";
 import type { UploadMeta } from "@/lib/engines/types";
+import { createId } from "@/lib/uuid";
 
 export type WorkspacePreviewKind = "image" | "pdf" | "markdown" | "code" | "text" | "ppt" | "file";
 
@@ -247,7 +248,7 @@ export async function fileToThreadUpload(file: File): Promise<ThreadUpload> {
   const previewUrl = kind === "image" || kind === "pdf" ? dataUrl : undefined;
 
   return {
-    id: crypto.randomUUID(),
+    id: createId(),
     name: file.name,
     mimeType: file.type || "application/octet-stream",
     size: file.size,

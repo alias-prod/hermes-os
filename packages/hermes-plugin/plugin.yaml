@@ -1,7 +1,13 @@
 name: hermes-os
 version: 0.1.0
-description: OpenUI guidance, skills, and helper tool for using Hermes Agent with the Hermes OS workspace.
+description: OpenUI guidance, skills, tools, and API routes for using Hermes Agent with the Hermes OS workspace.
 author: OpenUI
 kind: standalone
 provides_tools:
   - openui_instructions
+  - app_create
+  - get_app
+  - app_update
+  - list_apps
+provides_hooks:
+  - pre_llm_call

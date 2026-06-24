@@ -15,6 +15,8 @@
  * are authoritative when *creating* a key.
  */
 
+import { createId } from "@/lib/uuid";
+
 export const CLAW_SUFFIX = ":hermes-os";
 
 const MAIN_KEY_REGEX = /^agent:[^:]+:main:hermes-os$/i;
@@ -27,7 +29,7 @@ export function encodeMain(agentId: string): string {
 }
 
 /** `agent:<agentId>:<uuid>:hermes-os` — an extra named session key. */
-export function encodeExtra(agentId: string, slotId: string = crypto.randomUUID()): string {
+export function encodeExtra(agentId: string, slotId: string = createId()): string {
   return `agent:${agentId}:${slotId}${CLAW_SUFFIX}`;
 }
 
